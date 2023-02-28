@@ -1,6 +1,11 @@
-﻿namespace E_Commerce_Discount.CQRS.Commands.Request
+﻿using E_Commerce_Discount.CQRS.Commands.Response;
+using MediatR;
+using System;
+
+namespace E_Commerce_Discount.CQRS.Commands.Request
 {
-    public class DeleteDiscountCommandRequest
+    public class DeleteDiscountCommandRequest : IRequest<DeleteDiscountCommandResponse>
     {
+        public Guid Id { get; set; }
     }
 }

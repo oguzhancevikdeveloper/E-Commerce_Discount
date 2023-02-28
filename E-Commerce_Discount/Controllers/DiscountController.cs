@@ -1,4 +1,7 @@
 ﻿using E_Commerce_Discount.CQRS.Commands.Request;
+using E_Commerce_Discount.CQRS.Commands.Response;
+using E_Commerce_Discount.CQRS.Queries.Request;
+using E_Commerce_Discount.CQRS.Queries.Response;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +29,25 @@ namespace E_Commerce_Discount.Controllers
             return Ok(response);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Get([FromQuery] GetAllDiscountQueryRequest requestModel)
+        {
+            List<GetAllDiscountQueryResponse> allProducts = await _mediator.Send(requestModel);
+            return Ok(allProducts);
+        }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete([FromQuery] DeleteDiscountCommandRequest requestModel)
+        {
+            DeleteDiscountCommandResponse response = await _mediator.Send(requestModel);
+            return Ok(response);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Post([FromBody] UpdateDiscountCommandRequest requestModel)
+        {
+            UpdateDiscountCommandResponse response = await _mediator.Send(requestModel);
+            return Ok(response);
+        }
     }
 }
