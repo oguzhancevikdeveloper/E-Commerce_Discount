@@ -6,7 +6,7 @@ namespace E_Commerce_Discount.Model
 {
     public class Category : BaseClass
     {
-        public string Name { get; set; }
-        ICollection<Product> Products;
+
+
     }
 }

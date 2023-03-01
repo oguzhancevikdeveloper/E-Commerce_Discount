@@ -7,6 +7,5 @@ namespace E_Commerce_Discount.CQRS.Queries.Request
 {
     public class GetAllDiscountQueryRequest : IRequest<List<GetAllDiscountQueryResponse>>
     {
-        public Guid DiscountId { get; set; }
     }
 }

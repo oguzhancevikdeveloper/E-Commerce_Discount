@@ -21,10 +21,13 @@ namespace E_Commerce_Discount.CQRS.Handlers.QueryHandlers
 
             return _context.Discounts.Select(discount => new GetAllDiscountQueryResponse
             {
-                Amount = discount.Amount,
+                Amount = discount.Amount.Value,
+                Start = discount.StartDate.Value,
+                Finish = discount.FinishDate.Value,
                 ManagerId = discount.ManagerTypeId,
-                Finish = discount.FinishDate,
-                Start = discount.StartDate
+                Name = discount.Name,
+
+
             }).ToList();
         }
     }

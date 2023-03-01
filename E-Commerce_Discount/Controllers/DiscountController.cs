@@ -2,6 +2,7 @@
 using E_Commerce_Discount.CQRS.Commands.Response;
 using E_Commerce_Discount.CQRS.Queries.Request;
 using E_Commerce_Discount.CQRS.Queries.Response;
+using E_Commerce_Discount.Model;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -49,5 +50,6 @@ namespace E_Commerce_Discount.Controllers
             UpdateDiscountCommandResponse response = await _mediator.Send(requestModel);
             return Ok(response);
         }
+
     }
 }

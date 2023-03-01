@@ -2,11 +2,14 @@
 using E_Commerce_Discount.CQRS.Commands.Response;
 using E_Commerce_Discount.Model;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace E_Commerce_Discount.CQRS.Handlers.CommandHandlers
 {
@@ -20,19 +23,29 @@ namespace E_Commerce_Discount.CQRS.Handlers.CommandHandlers
 
         public async Task<UpdateDiscountCommandResponse> Handle(UpdateDiscountCommandRequest request, CancellationToken cancellationToken)
         {
-            _context.Discounts.Where(x => x.Id == request.DiscountId).Select(discount => new Discount
-            {
-                Amount = request.Amount,
-                ManagerTypeId = request.ManagerId,
-                StartDate = request.Start,
-                FinishDate = request.Finish,
-            });
-            _context.SaveChangesAsync();
+            var discount = _context.Discounts.Where(x => x.Id == request.DiscountId).FirstOrDefault();
+            var managerId = _context.ManagerTypes.FirstOrDefault(x => x.Id == request.ManagerId).Id;
 
-            return new UpdateDiscountCommandResponse
+
+            if (discount != null && request.ManagerId == managerId)
             {
-                IsSuccess = true
-            };
+                discount.Amount = request.Amount;
+                discount.Name = request.Name;
+                discount.CategoryId = request.CategoryId;
+                discount.StartDate = request.Start;
+                discount.FinishDate = request.Finish;
+                await _context.SaveChangesAsync();
+                return new UpdateDiscountCommandResponse
+                {
+                    IsSuccess = true
+                };
+            }
+            else
+            {
+                return default;
+            }
+
+
         }
     }
 }

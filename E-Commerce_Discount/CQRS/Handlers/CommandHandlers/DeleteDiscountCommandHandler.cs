@@ -20,14 +20,24 @@ namespace E_Commerce_Discount.CQRS.Handlers.CommandHandlers
 
         public async Task<DeleteDiscountCommandResponse> Handle(DeleteDiscountCommandRequest request, CancellationToken cancellationToken)
         {
-            var deleteDiscount = _context.Discounts.Where(x => x.Id == request.Id);
-            _context.Discounts.Remove((Discount)deleteDiscount);
-            _context.SaveChanges();
+            var deleteDiscount = _context.Discounts.FirstOrDefault(x => x.Id == request.Id);
+            var managerId = _context.ManagerTypes.FirstOrDefault(x => x.Id == request.ManagerTypeId).Id;
 
-            return new DeleteDiscountCommandResponse
+            if(request.ManagerTypeId == managerId)
             {
-                IsSuccess = true
-            };
+                _context.Discounts.Remove(deleteDiscount);
+                _context.SaveChanges();
+
+                return new DeleteDiscountCommandResponse
+                {
+                    IsSuccess = true
+                };
+            }
+            else
+            {
+                return default;
+            }
+
         }
     }
 }
