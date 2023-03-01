@@ -26,24 +26,44 @@ namespace E_Commerce_Discount.CQRS.Handlers.CommandHandlers
             var discount = _context.Discounts.Where(x => x.Id == request.DiscountId).FirstOrDefault();
             var managerId = _context.ManagerTypes.FirstOrDefault(x => x.Id == request.ManagerId).Id;
 
-
-            if (discount != null && request.ManagerId == managerId)
+            try
             {
-                discount.Amount = request.Amount;
-                discount.Name = request.Name;
-                discount.CategoryId = request.CategoryId;
-                discount.StartDate = request.Start;
-                discount.FinishDate = request.Finish;
-                await _context.SaveChangesAsync();
+                if (discount != null && request.ManagerId == managerId)
+                {
+                    discount.Amount = request.Amount;
+                    discount.Name = request.Name;
+                    discount.CategoryId = request.CategoryId;
+                    discount.StartDate = request.StartDate;
+                    discount.FinishDate = request.FinishDate;
+                    await _context.SaveChangesAsync();
+                    return new UpdateDiscountCommandResponse
+                    {
+                        IsSuccess = true,
+                        Message = "İnidirim günceleme işlemi, başarı ile gerçekleşmiştir."
+                    };
+                }
+                else
+                {
+                    return new UpdateDiscountCommandResponse
+                    {
+                        IsSuccess = false,
+                        Message = "İnidirim günceleme işlemi, gerçekleşmemiştir!"
+                    };
+                }
+            }
+            catch (Exception)
+            {
+
                 return new UpdateDiscountCommandResponse
                 {
-                    IsSuccess = true
+                    IsSuccess = false,
+                    Message = "İnidirim günceleme işlemi, gerçekleşmemiştir!"
                 };
             }
-            else
-            {
-                return default;
-            }
+
+
+
+
 
 
         }

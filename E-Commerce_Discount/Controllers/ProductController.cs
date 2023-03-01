@@ -3,6 +3,7 @@ using E_Commerce_Discount.CQRS.Queries.Response;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace E_Commerce_Discount.Controllers
@@ -22,9 +23,8 @@ namespace E_Commerce_Discount.Controllers
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] CheckDiscountForProductRequest requestModel)
         {
-            GetAllDiscountQueryResponse product = await _mediator.Send(requestModel);
-            return Ok(product);
+            List<CheckDiscountForProductResponse> allProducts = await _mediator.Send(requestModel);
+            return Ok(allProducts);
         }
-
     }
 }

@@ -20,24 +20,40 @@ namespace E_Commerce_Discount.CQRS.Handlers.CommandHandlers
 
         public async Task<DeleteDiscountCommandResponse> Handle(DeleteDiscountCommandRequest request, CancellationToken cancellationToken)
         {
-            var deleteDiscount = _context.Discounts.FirstOrDefault(x => x.Id == request.Id);
+            var deleteDiscount = _context.Discounts.FirstOrDefault(x => x.Id == request.DiscountId);
             var managerId = _context.ManagerTypes.FirstOrDefault(x => x.Id == request.ManagerTypeId).Id;
 
-            if(request.ManagerTypeId == managerId)
+            try
             {
-                _context.Discounts.Remove(deleteDiscount);
-                _context.SaveChanges();
+                if (request.ManagerTypeId == managerId)
+                {
+                    _context.Discounts.Remove(deleteDiscount);
+                    _context.SaveChanges();
+
+                    return new DeleteDiscountCommandResponse
+                    {
+                        IsSuccess = true,
+                         Message ="Ürün silme işlemi, başarı ile gerçekleştirilimiştir."
+                    };
+                }
+                else
+                {
+                    return new DeleteDiscountCommandResponse 
+                    {
+                         IsSuccess= false,
+                          Message = "Ürün silme işlemi, gerçekleştirelememiştir."
+                    };
+                }
+            }
+            catch (Exception)
+            {
 
                 return new DeleteDiscountCommandResponse
                 {
-                    IsSuccess = true
+                    IsSuccess = false,
+                    Message = "Ürün silme işlemi gerçekleştirelememiştir."
                 };
-            }
-            else
-            {
-                return default;
-            }
-
+            }          
         }
     }
 }

@@ -16,19 +16,27 @@ namespace E_Commerce_Discount.CQRS.Handlers.QueryHandlers
         {
             _context = context;
         }
+
         public async Task<List<GetAllDiscountQueryResponse>> Handle(GetAllDiscountQueryRequest request, CancellationToken cancellationToken)
         {
 
-            return _context.Discounts.Select(discount => new GetAllDiscountQueryResponse
+            try
             {
-                Amount = discount.Amount.Value,
-                Start = discount.StartDate.Value,
-                Finish = discount.FinishDate.Value,
-                ManagerId = discount.ManagerTypeId,
-                Name = discount.Name,
+                return _context.Discounts.Select(product => new GetAllDiscountQueryResponse
+                {
+                    Amount = product.Amount.Value,
+                    Name = product.Name,
+                    Start = product.StartDate.Value.Date,
+                    Finish = product.FinishDate.Value.Date,
+                    Message = "Listeleme işlemi başarılı ile gerçekleştirilmiştir."
 
+                }).ToList();
+            }
+            catch (System.Exception)
+            {
 
-            }).ToList();
+                return default;
+            }
         }
     }
 }

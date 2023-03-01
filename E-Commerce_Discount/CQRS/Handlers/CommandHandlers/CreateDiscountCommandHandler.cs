@@ -23,35 +23,48 @@ namespace E_Commerce_Discount.CQRS.Handlers.CommandHandlers
         public async Task<CreateDiscountCommandResponse> Handle(CreateDiscountCommandRequest request, CancellationToken cancellationToken)
         {
             var managerId = _context.ManagerTypes.FirstOrDefault(x => x.Id == request.ManagerTypeId).Id;
-
-
-            if (request == null)
-            {
-                return default;
-            }
-            if(request.ManagerTypeId != managerId)
-            {
-                return default;
-            }
-
             var id = Guid.NewGuid();
-            _context.Discounts.Add(new()
-            {
-                Id = id,
-                Name = request.Name,
-                Amount = request.Amount,
-                StartDate = request.Start,
-                FinishDate = request.Finish,
-                ManagerTypeId = request.ManagerTypeId,
-                CategoryId = request.CategoryId,
 
-            });
-            _context.SaveChangesAsync();
-            return new CreateDiscountCommandResponse
+            try
             {
-                DiscountId = id,
-                IsSuccess = true
-            };
+                if (request == null && request.ManagerTypeId != managerId)
+                {
+                    return new CreateDiscountCommandResponse
+                    {
+                        IsSuccess = false,
+                        Message = "İndirim oluşturma işlemi, gerçekleştirelememiştir!"
+                    };
+                }
+                else
+                {
+                    _context.Discounts.Add(new()
+                    {
+                        Id = id,
+                        Name = request.Name,
+                        Amount = request.Amount,
+                        StartDate = request.Start,
+                        FinishDate = request.Finish,
+                        ManagerTypeId = request.ManagerTypeId,
+                        CategoryId = request.CategoryId,
+                    });
+                    _context.SaveChangesAsync();
+                    return new CreateDiscountCommandResponse
+                    {
+                        IsSuccess = true,
+                        Message = "İndirim oluşturma işlemi, başarılı bir şekilde gerçekleştirilmiştir."
+                    };
+                }
+            }
+            catch (Exception)
+            {
+                return new CreateDiscountCommandResponse
+                {
+                    IsSuccess = false,
+                    Message = "İndirim oluşturma işlemi, gerçekleştirelememiştir!"
+
+                };
+            }
+
         }
     }
 }
